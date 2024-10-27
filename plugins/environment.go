@@ -14,10 +14,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
 
-	discovery "github.com/google/gnostic/discovery"
-	openapiv2 "github.com/google/gnostic/openapiv2"
-	openapiv3 "github.com/google/gnostic/openapiv3"
-	surface "github.com/google/gnostic/surface"
+	discovery "github.com/baharclerode/gnostic/discovery"
+	openapiv2 "github.com/baharclerode/gnostic/openapiv2"
+	openapiv3 "github.com/baharclerode/gnostic/openapiv3"
+	surface "github.com/baharclerode/gnostic/surface"
 )
 
 // Environment contains the environment of a plugin call.

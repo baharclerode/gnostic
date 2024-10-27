@@ -17,8 +17,8 @@ package jsonwriter_test
 import (
 	"testing"
 
-	"github.com/google/gnostic/compiler"
-	"github.com/google/gnostic/jsonwriter"
+	"github.com/baharclerode/gnostic/compiler"
+	"github.com/baharclerode/gnostic/jsonwriter"
 
 	"gopkg.in/yaml.v3"
 )

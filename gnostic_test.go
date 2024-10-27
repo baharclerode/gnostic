@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/gnostic/lib"
+	"github.com/baharclerode/gnostic/lib"
 )
 
 func isURL(path string) bool {
@@ -111,25 +111,25 @@ func TestSeparateJSON(t *testing.T) {
 
 func TestRemotePetstoreJSON(t *testing.T) {
 	testNormal(t,
-		"https://raw.githubusercontent.com/google/gnostic/master/examples/v2.0/json/petstore.json",
+		"https://raw.githubusercontent.com/baharclerode/gnostic/master/examples/v2.0/json/petstore.json",
 		"testdata/v2.0/petstore.text")
 }
 
 func TestRemotePetstoreYAML(t *testing.T) {
 	testNormal(t,
-		"https://raw.githubusercontent.com/google/gnostic/master/examples/v2.0/yaml/petstore.yaml",
+		"https://raw.githubusercontent.com/baharclerode/gnostic/master/examples/v2.0/yaml/petstore.yaml",
 		"testdata/v2.0/petstore.text")
 }
 
 func TestRemoteSeparateYAML(t *testing.T) {
 	testNormal(t,
-		"https://raw.githubusercontent.com/google/gnostic/master/examples/v2.0/yaml/petstore-separate/spec/swagger.yaml",
+		"https://raw.githubusercontent.com/baharclerode/gnostic/master/examples/v2.0/yaml/petstore-separate/spec/swagger.yaml",
 		"testdata/v2.0/yaml/petstore-separate/spec/swagger.text")
 }
 
 func TestRemoteSeparateJSON(t *testing.T) {
 	testNormal(t,
-		"https://raw.githubusercontent.com/google/gnostic/master/examples/v2.0/json/petstore-separate/spec/swagger.json",
+		"https://raw.githubusercontent.com/baharclerode/gnostic/master/examples/v2.0/json/petstore-separate/spec/swagger.json",
 		"testdata/v2.0/yaml/petstore-separate/spec/swagger.text")
 }
 
