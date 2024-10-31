@@ -1,10 +1,10 @@
 # Generated with protoc-gen-openapi
-# https://github.com/baharclerode/gnostic/tree/master/cmd/protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
 
 openapi: 3.0.3
 info:
     title: Messaging API
-    version: 0.0.1
+    version: 1.2.3
 paths:
     /v1/messages/{message_id}:
         patch:
@@ -38,13 +38,6 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        AnotherMessage:
-            type: object
-            properties:
-                id:
-                    type: string
-                label:
-                    type: string
         GoogleProtobufAny:
             type: object
             properties:
@@ -56,74 +49,54 @@ components:
         Message:
             type: object
             properties:
-                message_id:
-                    type: string
-                another_message:
-                    $ref: '#/components/schemas/AnotherMessage'
-                sub_message:
-                    $ref: '#/components/schemas/Message_SubMessage'
-                string_list:
+                sub:
+                    $ref: '#/components/schemas/Message_Sub'
+                subInput:
+                    writeOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                subOutput:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                subDesc:
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                    description: this sub has a description
+                subs:
+                    readOnly: true
                     type: array
                     items:
-                        type: string
-                sub_message_list:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Message_SubMessage'
-                object_list:
-                    type: array
-                    items:
-                        type: object
-                strings_map:
-                    type: object
-                    additionalProperties:
-                        type: string
-                sub_messages_map:
-                    type: object
-                    additionalProperties:
-                        $ref: '#/components/schemas/Message_SubMessage'
-                objects_map:
-                    type: object
-                    additionalProperties:
-                        type: object
+                        $ref: '#/components/schemas/Message_Sub'
+                    description: test repeated, should not allof wrapped
         Message_Body:
             type: object
             properties:
-                another_message:
-                    $ref: '#/components/schemas/AnotherMessage'
-                sub_message:
-                    $ref: '#/components/schemas/Message_SubMessage'
-                string_list:
+                sub:
+                    $ref: '#/components/schemas/Message_Sub'
+                subInput:
+                    writeOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                subOutput:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                subDesc:
+                    allOf:
+                        - $ref: '#/components/schemas/Message_Sub'
+                    description: this sub has a description
+                subs:
+                    readOnly: true
                     type: array
                     items:
-                        type: string
-                sub_message_list:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Message_SubMessage'
-                object_list:
-                    type: array
-                    items:
-                        type: object
-                strings_map:
-                    type: object
-                    additionalProperties:
-                        type: string
-                sub_messages_map:
-                    type: object
-                    additionalProperties:
-                        $ref: '#/components/schemas/Message_SubMessage'
-                objects_map:
-                    type: object
-                    additionalProperties:
-                        type: object
+                        $ref: '#/components/schemas/Message_Sub'
+                    description: test repeated, should not allof wrapped
             description: The body of Messaging_UpdateMessage
-        Message_SubMessage:
+        Message_Sub:
             type: object
             properties:
-                id:
-                    type: string
-                label:
+                content:
                     type: string
         Status:
             type: object

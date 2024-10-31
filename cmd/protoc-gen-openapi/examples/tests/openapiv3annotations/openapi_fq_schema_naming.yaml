@@ -29,7 +29,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/tests.openapiv3annotations.message.v1.Message'
+                            $ref: '#/components/schemas/tests.openapiv3annotations.message.v1.Message_Body'
                 required: true
             responses:
                 "200":
@@ -82,6 +82,17 @@ components:
                     title: this is an overriden field schema title
                     maxLength: 255
                     type: string
+        tests.openapiv3annotations.message.v1.Message_Body:
+            title: This is an overridden message schema title
+            type: object
+            properties:
+                id:
+                    type: string
+                label:
+                    title: this is an overriden field schema title
+                    maxLength: 255
+                    type: string
+            description: The body of Messaging1_UpdateMessage
     securitySchemes:
         BasicAuth:
             type: http
