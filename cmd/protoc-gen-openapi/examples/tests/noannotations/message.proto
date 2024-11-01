@@ -22,6 +22,11 @@ import "google/api/annotations.proto";
 option go_package = "github.com/baharclerode/gnostic/apps/protoc-gen-openapi/examples/tests/noannotations/message/v1;message";
 
 service Messaging1 {
+  /*
+   * Summary example
+   *
+   * Extended description
+   */
   rpc UpdateMessage(Message) returns(Message) {
     option(google.api.http) = {
         patch: "/v1/messages/{message_id}"

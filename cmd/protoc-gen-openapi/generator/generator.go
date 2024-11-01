@@ -250,6 +250,16 @@ func (g *OpenAPIv3Generator) filterCommentString(c protogen.Comments) string {
 	return strings.TrimSpace(comment)
 }
 
+// getMethodDescription splits the method comment into a summary and description
+func (g *OpenAPIv3Generator) getMethodDescription(method *protogen.Method) (string, string) {
+	comment := g.filterCommentString(method.Comments.Leading)
+	splitComment := strings.SplitN(comment, "\n", 3)
+	if len(splitComment) < 2 || strings.TrimSpace(splitComment[1]) != "" {
+		return "", comment
+	}
+	return splitComment[0], strings.TrimSpace(splitComment[2])
+}
+
 func (g *OpenAPIv3Generator) findField(name string, inMessage *protogen.Message) *protogen.Field {
 	for _, field := range inMessage.Fields {
 		if string(field.Desc.Name()) == name || string(field.Desc.JSONName()) == name {
@@ -454,6 +464,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 	operationID string,
 	tagName string,
 	description string,
+	summary string,
 	defaultHost string,
 	path string,
 	reqBodyField string,
@@ -628,6 +639,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 	op := &v3.Operation{
 		Tags:        []string{tagName},
 		Description: description,
+		Summary:     summary,
 		OperationId: operationID,
 		Parameters:  parameters,
 		Responses:   responses,
@@ -768,7 +780,7 @@ func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*pr
 		serviceOptions := service.Desc.Options().(*descriptorpb.ServiceOptions)
 
 		for _, method := range service.Methods {
-			comment := g.filterCommentString(method.Comments.Leading)
+			summary, description := g.getMethodDescription(method)
 			inputMessage := method.Input
 			outputMessage := method.Output
 			operationID := service.GoName + "_" + method.GoName
@@ -822,7 +834,7 @@ func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*pr
 					defaultHost := proto.GetExtension(service.Desc.Options(), annotations.E_DefaultHost).(string)
 
 					op, path2 := g.buildOperationV3(
-						d, operationID, service.GoName, comment, defaultHost, path, reqBody, resBody, inputMessage, outputMessage, deprecated)
+						d, operationID, service.GoName, description, summary, defaultHost, path, reqBody, resBody, inputMessage, outputMessage, deprecated)
 
 					// Merge any `Operation` annotations with the current
 					extOperation := proto.GetExtension(method.Desc.Options(), v3.E_Operation)
