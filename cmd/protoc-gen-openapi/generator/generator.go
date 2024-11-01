@@ -16,6 +16,7 @@
 package generator
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -36,15 +37,16 @@ import (
 )
 
 type Configuration struct {
-	Version         *string
-	Title           *string
-	Description     *string
-	Naming          *string
-	FQSchemaNaming  *bool
-	EnumType        *string
-	CircularDepth   *int
-	DefaultResponse *bool
-	OutputMode      *string
+	Version          *string
+	Title            *string
+	Description      *string
+	Naming           *string
+	FQSchemaNaming   *bool
+	EnumType         *string
+	CircularDepth    *int
+	DefaultResponse  *bool
+	OutputMode       *string
+	IncludeResponses *string
 }
 
 const (
@@ -606,6 +608,26 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 				},
 			},
 		},
+	}
+
+	if *g.conf.IncludeResponses != "" {
+		var commonErrors map[string]string
+		err := json.Unmarshal([]byte(*g.conf.IncludeResponses), &commonErrors)
+		if err != nil {
+			for key, value := range commonErrors {
+				commonResponse := &v3.NamedResponseOrReference{
+					Name: key,
+					Value: &v3.ResponseOrReference{
+						Oneof: &v3.ResponseOrReference_Reference{
+							Reference: &v3.Reference{
+								XRef: "#/components/references/" + value,
+							},
+						},
+					},
+				}
+				responses.ResponseOrReference = append(responses.ResponseOrReference, commonResponse)
+			}
+		}
 	}
 
 	// Add the default reponse if needed
