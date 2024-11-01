@@ -28,6 +28,7 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/descriptorpb"
 	any_pb "google.golang.org/protobuf/types/known/anypb"
 
 	wk "github.com/baharclerode/gnostic/cmd/protoc-gen-openapi/generator/wellknown"
@@ -459,6 +460,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 	resBodyField string,
 	inputMessage *protogen.Message,
 	outputMessage *protogen.Message,
+	deprecated bool,
 ) (*v3.Operation, string) {
 	// coveredParameters tracks the parameters that have been used in the body or path.
 	coveredParameters := make([]string, 0)
@@ -629,6 +631,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 		OperationId: operationID,
 		Parameters:  parameters,
 		Responses:   responses,
+		Deprecated:  deprecated,
 	}
 
 	if defaultHost != "" {
@@ -762,6 +765,7 @@ func (g *OpenAPIv3Generator) addOperationToDocumentV3(d *v3.Document, op *v3.Ope
 func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*protogen.Service) {
 	for _, service := range services {
 		annotationsCount := 0
+		serviceOptions := service.Desc.Options().(*descriptorpb.ServiceOptions)
 
 		for _, method := range service.Methods {
 			comment := g.filterCommentString(method.Comments.Leading)
@@ -770,6 +774,9 @@ func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*pr
 			operationID := service.GoName + "_" + method.GoName
 
 			rules := make([]*annotations.HttpRule, 0)
+
+			methodOptions := method.Desc.Options().(*descriptorpb.MethodOptions)
+			deprecated := serviceOptions.GetDeprecated() || methodOptions.GetDeprecated()
 
 			extHTTP := proto.GetExtension(method.Desc.Options(), annotations.E_Http)
 			if extHTTP != nil && extHTTP != annotations.E_Http.InterfaceOf(annotations.E_Http.Zero()) {
@@ -815,7 +822,7 @@ func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*pr
 					defaultHost := proto.GetExtension(service.Desc.Options(), annotations.E_DefaultHost).(string)
 
 					op, path2 := g.buildOperationV3(
-						d, operationID, service.GoName, comment, defaultHost, path, reqBody, resBody, inputMessage, outputMessage)
+						d, operationID, service.GoName, comment, defaultHost, path, reqBody, resBody, inputMessage, outputMessage, deprecated)
 
 					// Merge any `Operation` annotations with the current
 					extOperation := proto.GetExtension(method.Desc.Options(), v3.E_Operation)
