@@ -858,6 +858,22 @@ func (g *OpenAPIv3Generator) addPathsToDocumentV3(d *v3.Document, services []*pr
 					extOperation := proto.GetExtension(method.Desc.Options(), v3.E_Operation)
 					if extOperation != nil {
 						proto.Merge(op, extOperation.(*v3.Operation))
+						// Clean up overridden responses
+						i := 0
+					responseLoop:
+						for _, response := range op.Responses.ResponseOrReference {
+							for k := 0; k < i; k++ {
+								if op.Responses.ResponseOrReference[k].Name == response.Name {
+									continue responseLoop
+								}
+							}
+							op.Responses.ResponseOrReference[i] = response
+							i++
+						}
+						for j := i; j < len(op.Responses.ResponseOrReference); j++ {
+							op.Responses.ResponseOrReference[j] = nil
+						}
+						op.Responses.ResponseOrReference = op.Responses.ResponseOrReference[:i]
 					}
 
 					g.addOperationToDocumentV3(d, op, path2, methodName)
