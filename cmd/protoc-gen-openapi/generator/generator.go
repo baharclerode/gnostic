@@ -16,7 +16,6 @@
 package generator
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -46,7 +45,7 @@ type Configuration struct {
 	CircularDepth    *int
 	DefaultResponse  *bool
 	OutputMode       *string
-	IncludeResponses *string
+	DefaultResponses *string
 }
 
 const (
@@ -610,23 +609,20 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 		},
 	}
 
-	if *g.conf.IncludeResponses != "" {
-		var commonErrors map[string]string
-		err := json.Unmarshal([]byte(*g.conf.IncludeResponses), &commonErrors)
-		if err != nil {
-			for key, value := range commonErrors {
-				commonResponse := &v3.NamedResponseOrReference{
-					Name: key,
-					Value: &v3.ResponseOrReference{
-						Oneof: &v3.ResponseOrReference_Reference{
-							Reference: &v3.Reference{
-								XRef: "#/components/references/" + value,
-							},
+	if *g.conf.DefaultResponses != "" {
+		commonErrorCodes := strings.Split(*g.conf.DefaultResponses, ";")
+		for _, key := range commonErrorCodes {
+			commonResponse := &v3.NamedResponseOrReference{
+				Name: key,
+				Value: &v3.ResponseOrReference{
+					Oneof: &v3.ResponseOrReference_Reference{
+						Reference: &v3.Reference{
+							XRef: "#/components/references/" + key,
 						},
 					},
-				}
-				responses.ResponseOrReference = append(responses.ResponseOrReference, commonResponse)
+				},
 			}
+			responses.ResponseOrReference = append(responses.ResponseOrReference, commonResponse)
 		}
 	}
 

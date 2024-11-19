@@ -38,7 +38,7 @@ func main() {
 		CircularDepth:    flags.Int("depth", 2, "depth of recursion for circular messages"),
 		DefaultResponse:  flags.Bool("default_response", true, `add default response. If "true", automatically adds a default response to operations which use the google.rpc.Status message. Useful if you use envoy or grpc-gateway to transcode as they use this type for their default error responses.`),
 		OutputMode:       flags.String("output_mode", "merged", `output generation mode. By default, a single openapi.yaml is generated at the out folder. Use "source_relative' to generate a separate '[inputfile].openapi.yaml' next to each '[inputfile].proto'.`),
-		IncludeResponses: flags.String("include_responses", "", `JSON map of common responses that should be included on every operation`),
+		DefaultResponses: flags.String("default_responses", "", `Semicolon-delimited list of common responses that should be included on every operation`),
 	}
 
 	opts := protogen.Options{
