@@ -617,7 +617,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 				Value: &v3.ResponseOrReference{
 					Oneof: &v3.ResponseOrReference_Reference{
 						Reference: &v3.Reference{
-							XRef: "#/components/references/" + key,
+							XRef: "#/components/responses/" + key,
 						},
 					},
 				},
