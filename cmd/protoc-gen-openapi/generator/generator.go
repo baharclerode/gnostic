@@ -593,6 +593,12 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 	}
 
 	name, content := g.reflect.responseContentForMessage(outputMessage.Desc)
+	var responseDescription string
+	if name == "204" {
+		responseDescription = "No Content"
+	} else {
+		responseDescription = "OK"
+	}
 	responses := &v3.Responses{
 		ResponseOrReference: []*v3.NamedResponseOrReference{
 			{
@@ -600,7 +606,7 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 				Value: &v3.ResponseOrReference{
 					Oneof: &v3.ResponseOrReference_Response{
 						Response: &v3.Response{
-							Description: "OK",
+							Description: responseDescription,
 							Content:     content,
 						},
 					},

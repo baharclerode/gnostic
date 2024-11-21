@@ -104,7 +104,7 @@ func (r *OpenAPIv3Reflector) responseContentForMessage(message protoreflect.Mess
 	typeName := r.fullMessageTypeName(message)
 
 	if typeName == ".google.protobuf.Empty" {
-		return "200", &v3.MediaTypes{}
+		return "204", nil
 	}
 
 	if typeName == ".google.api.HttpBody" {
